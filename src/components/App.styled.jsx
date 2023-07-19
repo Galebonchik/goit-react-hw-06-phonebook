@@ -14,7 +14,7 @@ export const TelephoneBook = styled.div`
 `;
 
 export const Title = styled.h1`
-  margin: 2% auto 10% auto;
+  margin: 3% auto 3% auto;
   text-align: center;
   color: purple;
 `;

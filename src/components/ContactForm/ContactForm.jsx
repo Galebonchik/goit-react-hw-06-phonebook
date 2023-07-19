@@ -1,9 +1,36 @@
 import { useState } from 'react';
+import { nanoid } from '@reduxjs/toolkit';
 import { Form, Input, Button } from '../ContactForm/ContactForm.styled';
+import { useSelector, useDispatch } from 'react-redux';
+import { getVisibleContacts } from 'redux/selectors';
+import { addContact } from 'redux/contactsSlice';
 
-export function ContactForm({ onSubmit }) {
+const nameInputId = nanoid();
+const numberInputId = nanoid();
+
+export function ContactForm() {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+
+  const contacts = useSelector(getVisibleContacts);
+  const dispatch = useDispatch();
+
+  const handleSubmit = event => {
+    event.preventDefault();
+
+    const isInContacts = contacts.some(
+      contact => contact.name.toLowerCase().trim() === name.toLowerCase().trim()
+    );
+
+    if (isInContacts) {
+      alert(`${name} is already in contacts`);
+      return;
+    }
+
+    dispatch(addContact({ name, number }));
+    setName('');
+    setNumber('');
+  };
 
   const handleInputChange = event => {
     const { name, value } = event.target;
@@ -20,16 +47,9 @@ export function ContactForm({ onSubmit }) {
     }
   };
 
-  const handleSubmit = event => {
-    event.preventDefault();
-    onSubmit(name, number);
-    setName('');
-    setNumber('');
-  };
-
   return (
     <Form onSubmit={handleSubmit}>
-      <label htmlFor=""> Name</label>
+      <label htmlFor={nameInputId}> Name</label>
       <Input
         type="text"
         name="name"
@@ -40,7 +60,7 @@ export function ContactForm({ onSubmit }) {
         required
       />
 
-      <label htmlFor="">Number </label>
+      <label htmlFor={numberInputId}>Number </label>
       <Input
         type="tel"
         name="number"

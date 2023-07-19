@@ -1,15 +1,29 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-
+import { nanoid } from '@reduxjs/toolkit';
+import { useSelector, useDispatch } from 'react-redux';
+import { getFilter } from 'redux/selectors';
+import { changeFilter } from 'redux/filterSlice';
 import { FilterTitle } from './Filter.styled';
 
-export const Filter = ({ value, onChange }) => (
-  <label>
-    Find contacts by name
-    <FilterTitle type="text" value={value} onChange={onChange} />
-  </label>
-);
+const filterInputId = nanoid();
 
-Filter.propTypes = {
-  value: PropTypes.string.isRequired,
+export const Filter = () => {
+  const value = useSelector(getFilter);
+  const dispatch = useDispatch();
+  const onChange = event => {
+    const normalizedValue = event.target.value.toLowerCase();
+
+    dispatch(changeFilter(normalizedValue));
+  };
+  return (
+    <label>
+      Find contacts by name
+      <FilterTitle
+        type="text"
+        value={value}
+        onChange={onChange}
+        id={filterInputId}
+      />
+    </label>
+  );
 };
